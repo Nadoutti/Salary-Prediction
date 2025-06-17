@@ -1,0 +1,34 @@
+
+version: '3.8'
+
+services:
+  ai:
+    build:
+      context: ./ai
+    working_dir: /app
+    command: ["python", "app.py"]
+    volumes:
+      - ./ai:/app
+
+  backend:
+    build:
+      context: ./backend
+    working_dir: /app
+    command: ["uvicorn", "main:app", "--reload", "--host", "0.0.0.0", "--port", "5000"]
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./backend:/app
+
+  frontend:
+    build:
+      context: ./frontend
+    working_dir: /app
+    command: ["npm", "run", "dev"]
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app
+    depends_on:
+      - backend
+
