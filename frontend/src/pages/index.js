@@ -1,8 +1,31 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import axios from "axios";
 
 export default function Home() {
+  API_URL_ROOT = "http://127.0.0.1:5000"
 
+  const [prediction, setPrediction] = useState("");
+  const [experience, setExperience] = useState("");
   
+  
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await  axios.post(`${API_URL_ROOT}/predict`, {
+        experience: experience,
+      });
+      setPrediction(response.data.prediction);
+    }
+  }
+
+  catch (error) {
+    console.error("Error fetching prediction:", error);
+    setPrediction("Error fetching prediction");
+  }
+
+  };
+
+
 
   return (
     <div className="
@@ -36,7 +59,15 @@ export default function Home() {
           gap-5
           justify-start
           mt-8">
-          <form className="
+          <form onSubmit={handleSubmit} className="
+            border
+            rounded-lg 
+            border-gray-300
+            w-full
+            p-6
+            flex
+            flex-col
+            gap-5" >
             border
             rounded-lg 
             border-gray-300
@@ -74,6 +105,7 @@ export default function Home() {
               mt-5">Predict Salary</button>
           </form>
 
+        {prediction ? (
           <p className="
             font-bold
             mt-7
@@ -81,10 +113,21 @@ export default function Home() {
             typewriter-animation
 
             ">Your salary will be..</p>
-          
-        </div>
-      </div>
+            ) : (
+          <p className="
+            font-bold
+            mt-7
+            cursor
+            typewriter-animation
 
+            ">Your salary will be {prediction}</p>
+            )
+        }
+
+
+      </div>
     </div>
-  );
+
+  </div>
+);
 }

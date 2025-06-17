@@ -1,5 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+import numpy as np
+from joblib import load
+
 
 
 app = FastAPI()
@@ -18,6 +21,16 @@ app.add_middleware(
 #route for predicting with the model
 @app.post("/predict")
 async def predict(data: dict):
-    # Here you would typically process the input data and return a prediction
-    # For demonstration, we will just return the received data
-    return {"received_data": data}
+    
+    loaded_model = load("../ai/linear_regression_model.joblib")
+    
+
+    # Assuming the input data is a dictionary with the necessary features
+    features = np.array([data[key] for key in sorted(data.keys())]).reshape(1, -1)
+
+    # Predicting using the loaded model
+    
+    prediction = loaded_model.predict(features)
+
+
+    return prediction.item(0)  # Return the prediction as a single value

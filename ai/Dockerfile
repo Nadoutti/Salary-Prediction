@@ -1,7 +1,7 @@
 FROM python:3.11
 
 
-WOERKDIR /app
+WORKDIR /app
 
 COPY requirements.txt .
 
